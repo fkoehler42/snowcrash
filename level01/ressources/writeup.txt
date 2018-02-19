@@ -1,6 +1,17 @@
-/!\ From here, we will sometimes use a Kali Linux virtual machine which provide some useful security tools.
+### Changes to write here following the Kali ssh setup (WIP) ###
 
-- Look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
+/!\ From here, we will sometimes use a Kali Linux virtual machine which provide some useful security tools.
+To set it up, we first log in as root, create a new user who belongs to sudo group, then reset the ssh service settings to default to enable remote connection.
+
+`useradd -m fkoehler -G sudo -s /bin/bash`
+`passwd fkoehler`
+`[type new password twice]`
+`update-rc.d -f ssh remove`
+`update-rc.d -f ssh defaults`
+`service ssh restart`
+`su fkoehler`
+
+- Back to SnowCrash machine, look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
 
 `cat /etc/passwd | grep flag01`
 flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
@@ -9,7 +20,7 @@ flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
 
 - In Kali, get the previous '/etc/passwd' file through scp command (data transfer using ssh).
 
-`scp -P 4242 level00@[SnowCrashIPAddress]:/etc/passwd .`
+`scp -P 4242 level00@[SnowCrashIPAddress]:/etc/passwd `
 
 - Enter the level00 user password (level00) at prompt, then supply the copied file to 'john' executable.
 
