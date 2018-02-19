@@ -1,0 +1,23 @@
+/!\ From here, we will sometimes use a Kali Linux virtual machine which provide some useful security tools.
+
+- Look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
+
+`cat /etc/passwd | grep flag01`
+flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
+
+- Launch Kali Linux to use the password decryption tool 'John the Ripper'.
+
+- In Kali, get the previous '/etc/passwd' file through scp command (data transfer using ssh).
+
+`scp -P 4242 level00@[SnowCrashIPAddress]:/etc/passwd .`
+
+- Enter the level00 user password (level00) at prompt, then supply the copied file to 'john' executable.
+
+`john -user=flag01 ./passwd`
+Loaded 1 password hash (descrypt, traditional crypt(3) [DES 128/128 AVX-16])
+abcdefg		(flag01)
+
+`su flag01`
+`abcdefg`
+`getflag`
+Check flag.Here is your token : f2av5il02puano7naaf6adaaf
