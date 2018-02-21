@@ -13,9 +13,9 @@
 
 - Look at the hexadecimal dump to see that the dots correspond to '7f' or 'DEL' character in ASCII.
 
-- Delete the corresponding characters give us the password 'ft_waNDReLOL'
+- Delete the corresponding characters give us the password 'ft_waNDReL0L'
 
 `su flag02`
-`ft_waNDReLOL`
+`ft_waNDReL0L`
 `getflag`
 Check flag.Here is your token : kooda2puivaav1idi4f57q8iq
