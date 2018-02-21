@@ -1,33 +1,21 @@
-### Changes to write here following the Kali ssh setup (WIP) ###
-
 /!\ From here, we will sometimes use a Kali Linux virtual machine which provide some useful security tools.
-To set it up, first log in as root, create a new user who belongs to sudo group, then reset the ssh service settings to default to enable remote connection easily.
 
-`useradd -m fkoehler -G sudo -s /bin/bash`
-`passwd fkoehler`
-`[type new password twice]`
-`update-rc.d -f ssh remove`
-`update-rc.d -f ssh defaults`
-`systemctl enable ssh` #auto-start ssh on boot
-`service ssh restart`
-`su fkoehler`
-`[type password]`
-
-
-- Back to SnowCrash machine, look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
+- On SnowCrash machine, look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
 
 `cat /etc/passwd | grep flag01`
 flag01:42hDRfypTqqnw:3001:3001::/home/flag/flag01:/bin/bash
 
-- On host machine, copy the 'passwd' file from SnowCrash to Kali in order to use the password decryption tool 'John the Ripper'
+- On Kali, get the 'passwd' file to use the password decryption tool 'John the Ripper'
 
-`scp -P 4242 level00@[SnowCrashIPAddress]:/etc/passwd .` ##command to update to make the copy from snowcrash to kali on host machine
+`scp -P 4242 level00@[SnowCrashIPAddress]:/etc/passwd .`
 
-- Enter the level00 user password (level00) at prompt, then supply the copied file to 'john' executable.
+- Enter the level00 password (level00) at prompt, then supply the copied file to 'john' executable.
 
 `john -user=flag01 ./passwd`
 Loaded 1 password hash (descrypt, traditional crypt(3) [DES 128/128 AVX-16])
 abcdefg		(flag01)
+
+- Go back to SnowCrash
 
 `su flag01`
 `abcdefg`

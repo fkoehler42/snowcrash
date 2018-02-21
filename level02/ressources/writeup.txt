@@ -1,8 +1,8 @@
 - List the files in level02 user home directory to find 'level02.pcap' file wich contains a list a packets captured on the network.
 
-- Transfer it from SnowCrash to Kali through scp command and supply it to the packets analyzer tool 'Wireshark'.
+- Copy it to Kali through scp command and supply it to the packets analyzer tool 'Wireshark'.
 
-`scp -P 4242 level00@[SnowCrashIPAddress]:~/level02.pcap .` ## update to-do
+`scp -P 4242 level02@[SnowCrashIPAddress]:~/level02.pcap .`
 `sudo wireshark level02.pcap`
 
 - After a quick overview, spot the packet 43 with the string 'Password: ' inside its data (ASCII display).
