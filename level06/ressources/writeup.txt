@@ -1,0 +1,18 @@
+- List the files in level06 user home directory to find 'level06' executable and 'level06.php' script which belong to flag06 user.
+
+- Look at the php script to see that it takes two parameters and calls a function x to get the content of the first parameter, assuming it refers to a file.
+
+- Then replacements are done to this content, based on regular expressions.
+
+- Analyse the first regex used in function x to spot a vulnerability, the use of the regex modifier 'e'(PREG_REPLACE_EVAL).
+
+'preg_replace("/(\[x (.*)\])/e", "y(\"\\2\")", $a)'
+
+- This modifier evaluate any match of the replacement string as PHP code, allowing malicious code injection.
+
+- Use this vulnerability to create a file whose content will match the regexp and execute getflag, then launch the 'level06' executable to start the script as flag06 user.
+
+`echo '[x ${`getflag`}]' > /tmp/getflag`
+`./level06 /tmp/getflag`
+PHP Notice:  Undefined variable: Check flag.Here is your token : wiok45aaoguiboiki2tuin6ub
+ in /home/user/level06/level06.php(4) : regexp code on line 1
