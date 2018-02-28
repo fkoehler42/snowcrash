@@ -1,0 +1,70 @@
+- List the files in level10 user home directory to find 'level10' executable and 'token' file owned by flag10 user (setuid control bit active on the executable).
+
+- Use objdump to get some informations about the executable such as functions called or strings declared (gdb may be useful too).
+
+`objdump -s ./level10` # -s = --full-contents, self explanatory
+...
+...
+...
+Contents of section .dynstr:
+ 8048310 005f5f67 6d6f6e5f 73746172 745f5f00  .__gmon_start__.
+ 8048320 6c696263 2e736f2e 36005f49 4f5f7374  libc.so.6._IO_st
+ 8048330 64696e5f 75736564 00736f63 6b657400  din_used.socket.
+ 8048340 66666c75 73680065 78697400 68746f6e  fflush.exit.hton
+ 8048350 7300636f 6e6e6563 74007075 7473005f  s.connect.puts._
+ 8048360 5f737461 636b5f63 686b5f66 61696c00  _stack_chk_fail.
+ 8048370 7072696e 7466005f 5f657272 6e6f5f6c  printf.__errno_l
+ 8048380 6f636174 696f6e00 72656164 00737464  ocation.read.std
+ 8048390 6f757400 696e6574 5f616464 72006f70  out.inet_addr.op
+ 80483a0 656e0061 63636573 73007374 72657272  en.access.strerr
+ 80483b0 6f72005f 5f6c6962 635f7374 6172745f  or.__libc_start_
+ 80483c0 6d61696e 00777269 74650047 4c494243  main.write.GLIBC
+ 80483d0 5f322e34 00474c49 42435f32 2e3000    _2.4.GLIBC_2.0.
+...
+...
+...
+Contents of section .rodata:
+ 8048a38 03000000 01000200 25732066 696c6520  ........%s file
+ 8048a48 686f7374 0a097365 6e647320 66696c65  host..sends file
+ 8048a58 20746f20 686f7374 20696620 796f7520   to host if you
+ 8048a68 68617665 20616363 65737320 746f2069  have access to i
+ 8048a78 740a0043 6f6e6e65 6374696e 6720746f  t..Connecting to
+ 8048a88 2025733a 36393639 202e2e20 00556e61   %s:6969 .. .Una
+ 8048a98 626c6520 746f2063 6f6e6e65 63742074  ble to connect t
+ 8048aa8 6f20686f 73742025 730a002e 2a282029  o host %s...*( )
+ 8048ab8 2a2e0a00 556e6162 6c652074 6f207772  *...Unable to wr
+ 8048ac8 69746520 62616e6e 65722074 6f20686f  ite banner to ho
+ 8048ad8 73742025 730a0043 6f6e6e65 63746564  st %s..Connected
+ 8048ae8 210a5365 6e64696e 67206669 6c65202e  !.Sending file .
+ 8048af8 2e200044 616d6e2e 20556e61 626c6520  . .Damn. Unable
+ 8048b08 746f206f 70656e20 66696c65 00556e61  to open file.Una
+ 8048b18 626c6520 746f2072 65616420 66726f6d  ble to read from
+ 8048b28 2066696c 653a2025 730a0077 726f7465   file: %s..wrote
+ 8048b38 2066696c 65210059 6f752064 6f6e2774   file!.You don't
+ 8048b48 20686176 65206163 63657373 20746f20   have access to
+ 8048b58 25730a00                             %s..
+...
+...
+...
+
+- According to these informations, the executable seems to open a network connection to send a file. Try to run it.
+
+`./level10`
+./level10 file host
+	sends file to host if you have access to it
+
+`./level10 token 127.0.0.1`
+You don't have access to token
+
+`echo coucou > /tmp/test`
+`./level10 /tmp/test 127.0.0.1`
+Connecting to 127.0.0.1:6969 .. Unable to connect to host 127.0.0.1
+
+- Find a way to send the token while listening to port 6969.
+
+#################   to do : finish this writeup ########################
+
+`su flag10`
+`woupa2yuojeeaaed06riuj63c`
+`getflag`
+Check flag.Here is your token : feulo4b72j7edeahuete3no7c
