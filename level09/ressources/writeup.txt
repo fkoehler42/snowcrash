@@ -1,0 +1,41 @@
+- List the files in level09 user home directory to find 'level09' executable and 'token' file owned by flag09 user (setuid control bit active on the executable).
+
+- 'token' file is readable by level09 user so we can print its content.
+
+`cat token`
+f4kmm6p|=�p�n��DB�Du{��
+
+- This string contains some out of ascii bounds characters and does not work to log in flag09 nor level10 user.
+
+- Use ltrace with the executable to find the following hint : "You should not reverse this".
+
+`ltrace ./level09`
+__libc_start_main(0x80487ce, 1, 0xbffff804, 0x8048aa0, 0x8048b10 <unfinished ...>
+ptrace(0, 0, 1, 0, 0xb7e2fe38)                                                                = -1
+puts("You should not reverse this"You should not reverse this
+)                                                           = 28
++++ exited (status 1) +++
+
+- Run the executable with differents arguments to understand how it works.
+
+`./level09`
+You need to provied only one arg.
+`./level09 toto`
+tpvr
+`./level09 aaaaaaaa`
+abcdefgh
+
+- The executable seems to encrypt the string passed as argument by adding to each character its own index.
+
+- Write a program which takes the encrypted string as argument and subtract to each character the value of its index.
+
+`cd /tmp`
+`vi decrypt.c` (file attached)
+`gcc -std=c99 decrypt.c -o decrypt`
+`./decrypt `cat ~/token``
+f3iji1ju5yuevaus41q1afiuq
+
+`su flag09`
+`f3iji1ju5yuevaus41q1afiuq`
+`getflag`
+Check flag.Here is your token : s5cAJpM8ev6XHw998pRWG728z
