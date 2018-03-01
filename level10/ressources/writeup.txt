@@ -56,13 +56,32 @@ Contents of section .rodata:
 `./level10 token 127.0.0.1`
 You don't have access to token
 
-`echo coucou > /tmp/test`
+`echo hello > /tmp/test`
 `./level10 /tmp/test 127.0.0.1`
 Connecting to 127.0.0.1:6969 .. Unable to connect to host 127.0.0.1
 
-- Find a way to send the token while listening to port 6969.
+- Look for a way to send the token and get its content, listening to port 6969.
 
-#################   to do : finish this writeup ########################
+- After some investigations on the Internet about differents exploits, and a closer look to the man pages of the functions called inside the executable,
+we find that use the 'access()' function to check the permissions before a call to 'open()' is unsecure. Actually, a race condition exploit will allow us to alter the file between the 'acess()' and the 'open()' calls.
+
+- The interval is short, so we need to launch two processes at the same time to run the executable and alter the file we will send.
+
+- Let's write a program which first create a regular file in /tmp folder, then simultaneously run the executable and recreate the file as a link to the 'token' file.
+
+`cd /tmp ; vim access.c` (file attached).
+`gcc access.c -o access`
+
+- Now open a new terminal window and use the 'netcat' utility to listen on port 6969.
+
+`nc -lk 6969` # -l to specify netcat should listen on specified port, -k to stay listening after each connection.
+
+- Back to the first window, run the access program in an infinite loop until the password appears in the netcat window, then press CTRL + C to stop the loop.
+
+`while true; do ./access; done`
+.*( )*.
+.*( )*.
+woupa2yuojeeaaed06riuj63c
 
 `su flag10`
 `woupa2yuojeeaaed06riuj63c`
