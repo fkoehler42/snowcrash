@@ -1,6 +1,6 @@
 - List the files in level04 user home directory to find 'level04.pl' perl script which belongs to flag04 user.
 
-- Take a look at the code inside
+- Take a look at the code inside.
 
 `cat ./level04.pl`
 #!/usr/bin/perl
@@ -13,7 +13,7 @@ sub x { # subroutine (aka function) x definition
 }
 x(param("x")); # call the subroutine x with the value corresponding to the key "x" of param 
 
-- After dissecting the script content, we understand that it is executed from a web server host on local machine and reachable via the port 4747
+- After dissecting the script content, we understand that it is executed from a web server hosted on local machine and reachable via the port 4747
 
 - Send a request to the server script and supply it the parameter 'x=`getflag`' to make it execute getflag, echo its output, then print the output of the echo command.
 
