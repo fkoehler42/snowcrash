@@ -15,7 +15,7 @@ x(param("x")); # call the subroutine x with the value corresponding to the key "
 
 - After dissecting the script content, we understand that it is executed from a web server hosted on local machine and reachable via the port 4747
 
-- Send a request to the server script and supply it the parameter 'x=`getflag`' to make it execute getflag, echo its output, then print the output of the echo command.
+- Send a request to the script and supply it the parameter 'x=`getflag`' to make it execute getflag, echo its output, then print the output of the echo command.
 
-`curl '[SnowCrashIPAddress]:4747/level04.pl?x=`getflag`'`
+`curl 'localhost:4747/level04.pl?x=`getflag`'`
 Check flag.Here is your token : ne2searoevaevoem4ov4ar8ap
