@@ -1,0 +1,154 @@
+- The level14 user home folder does not contain any file. Use the same commands as in the first levels to find any useful file.
+
+`find / -user flag14 2>/dev/null`
+`find / -user level14 ! -name /proc/* 2>/dev/null`
+`cat /etc/passwd | grep 14`
+level14:x:2014:2014::/home/user/level14:/bin/bash
+flag14:x:3014:3014::/home/flag/flag14:/bin/bash
+`cat /etc/shadow*`
+cat: /etc/shadow: Permission denied
+cat: /etc/shadow-: Permission denied
+
+- Nothing interesting here, take a look at the getflag executable to find any hint.
+
+`ltrace getflag`
+__libc_start_main(0x8048946, 1, 0xbffff7e4, 0x8048ed0, 0x8048f40 <unfinished ...>
+ptrace(0, 0, 1, 0, 0)                                                                         = -1
+puts("You should not reverse this"You should not reverse this
+)                                                           = 28
++++ exited (status 1) +++
+
+- As in level09 executable, getflag contains the string "You should not reverse this", interesting...or maybe not.
+
+- Use objdump to find the functions called in the binary.
+
+`objdump -s /bin/getflag`
+...
+...
+Contents of section .dynstr:
+ 80482d8 005f5f67 6d6f6e5f 73746172 745f5f00  .__gmon_start__.
+ 80482e8 6c696263 2e736f2e 36005f49 4f5f7374  libc.so.6._IO_st
+ 80482f8 64696e5f 75736564 005f5f73 7461636b  din_used.__stack
+ 8048308 5f63686b 5f666169 6c007374 72647570  _chk_fail.strdup
+ 8048318 00737464 6f757400 66707574 63006670  .stdout.fputc.fp
+ 8048328 75747300 67657465 6e760073 74646572  uts.getenv.stder
+ 8048338 72006765 74756964 00707472 61636500  r.getuid.ptrace.
+ 8048348 66777269 7465006f 70656e00 5f5f6c69  fwrite.open.__li
+ 8048358 62635f73 74617274 5f6d6169 6e00474c  bc_start_main.GL
+ 8048368 4942435f 322e3400 474c4942 435f322e  IBC_2.4.GLIBC_2.
+ 8048378 3000                                 0.
+...
+...
+
+- Use gdb to look at the assembly code, especially at the 'getuid()' call.
+
+`gdb -q getflag`
+Reading symbols from /bin/getflag...(no debugging symbols found)...done.
+`disass main`
+Dump of assembler code for function main:
+   0x08048946 <+0>:		push   %ebp
+   0x08048947 <+1>:		mov    %esp,%ebp
+   0x08048949 <+3>:		push   %ebx
+   0x0804894a <+4>:		and    $0xfffffff0,%esp
+   0x0804894d <+7>:		sub    $0x120,%esp
+   0x08048953 <+13>:	mov    %gs:0x14,%eax
+   0x08048959 <+19>:	mov    %eax,0x11c(%esp)
+   0x08048960 <+26>:	xor    %eax,%eax
+   0x08048962 <+28>:	movl   $0x0,0x10(%esp)
+   0x0804896a <+36>:	movl   $0x0,0xc(%esp)
+   0x08048972 <+44>:	movl   $0x1,0x8(%esp)
+   0x0804897a <+52>:	movl   $0x0,0x4(%esp)
+   0x08048982 <+60>:	movl   $0x0,(%esp)
+   0x08048989 <+67>:	call   0x8048540 <ptrace@plt>
+   0x0804898e <+72>:	test   %eax,%eax
+   0x08048990 <+74>:	jns    0x80489a8 <main+98> # jump to getuid() instruction if ptrace() returns a positive value
+   ...
+   ...
+   0x08048afd <+439>:	call   0x80484b0 <getuid@plt> # get the user id, then compare it to the UID of each flagXX user
+   0x08048b02 <+444>:	mov    %eax,0x18(%esp)
+   0x08048b06 <+448>:	mov    0x18(%esp),%eax
+   0x08048b0a <+452>:	cmp    $0xbbe,%eax
+   0x08048b0f <+457>:	je     0x8048ccb <main+901>
+   0x08048b15 <+463>:	cmp    $0xbbe,%eax
+   0x08048b1a <+468>:	ja     0x8048b68 <main+546>
+   0x08048b1c <+470>:	cmp    $0xbba,%eax
+   0x08048b21 <+475>:	je     0x8048c3b <main+757>
+   0x08048b27 <+481>:	cmp    $0xbba,%eax
+   0x08048b2c <+486>:	ja     0x8048b4d <main+519>
+   0x08048b2e <+488>:	cmp    $0xbb8,%eax
+   0x08048b33 <+493>:	je     0x8048bf3 <main+685>
+   0x08048b39 <+499>:	cmp    $0xbb8,%eax
+   0x08048b3e <+504>:	ja     0x8048c17 <main+721>
+   0x08048b44 <+510>:	test   %eax,%eax
+   0x08048b46 <+512>:	je     0x8048bc6 <main+640>
+   0x08048b48 <+514>:	jmp    0x8048e06 <main+1216>
+   0x08048b4d <+519>:	cmp    $0xbbc,%eax
+   0x08048b52 <+524>:	je     0x8048c83 <main+829>
+   0x08048b58 <+530>:	cmp    $0xbbc,%eax
+   0x08048b5d <+535>:	ja     0x8048ca7 <main+865>
+   0x08048b63 <+541>:	jmp    0x8048c5f <main+793>
+   0x08048b68 <+546>:	cmp    $0xbc2,%eax
+   0x08048b6d <+551>:	je     0x8048d5b <main+1045>
+   0x08048b73 <+557>:	cmp    $0xbc2,%eax
+   0x08048b78 <+562>:	ja     0x8048b95 <main+591>
+   0x08048b7a <+564>:	cmp    $0xbc0,%eax
+   0x08048b7f <+569>:	je     0x8048d13 <main+973>
+   0x08048b85 <+575>:	cmp    $0xbc0,%eax
+   0x08048b8a <+580>:	ja     0x8048d37 <main+1009>
+   0x08048b90 <+586>:	jmp    0x8048cef <main+937>
+   0x08048b95 <+591>:	cmp    $0xbc4,%eax
+   0x08048b9a <+596>:	je     0x8048da3 <main+1117>
+   0x08048ba0 <+602>:	cmp    $0xbc4,%eax
+   0x08048ba5 <+607>:	jb     0x8048d7f <main+1081>
+   0x08048bab <+613>:	cmp    $0xbc5,%eax
+   0x08048bb0 <+618>:	je     0x8048dc4 <main+1150>
+   0x08048bb6 <+624>:	cmp    $0xbc6,%eax # 0xbc6 == 3014 == flag14 UID
+   0x08048bbb <+629>:	je     0x8048de5 <main+1183> # jump to the token's writing part
+   ...
+   ...
+   0x08048de5 <+1183>:	mov    0x804b060,%eax
+   0x08048dea <+1188>:	mov    %eax,%ebx
+   0x08048dec <+1190>:	movl   $0x8049220,(%esp)
+   0x08048df3 <+1197>:	call   0x8048604 <ft_des>
+   0x08048df8 <+1202>:	mov    %ebx,0x4(%esp)
+   0x08048dfc <+1206>:	mov    %eax,(%esp)
+   0x08048dff <+1209>:	call   0x8048530 <fputs@plt> # write the token value, probably acquired via ft_des() function
+   0x08048e04 <+1214>:	jmp    0x8048e2f <main+1257>
+   ...
+   ...
+   0x08048e2f <+1257>:	mov    0x804b060,%eax
+   0x08048e34 <+1262>:	mov    %eax,0x4(%esp)
+   0x08048e38 <+1266>:	movl   $0xa,(%esp)
+   0x08048e3f <+1273>:	call   0x8048520 <fputc@plt> # write a newline character
+   0x08048e44 <+1278>:	jmp    0x8048ead <main+1383>
+   ...
+   ...
+   0x08048ead <+1383>:	mov    $0x0,%eax
+   0x08048eb2 <+1388>:	mov    0x11c(%esp),%edx
+   0x08048eb9 <+1395>:	xor    %gs:0x14,%edx
+   0x08048ec0 <+1402>:	je     0x8048ec7 <main+1409>
+   0x08048ec2 <+1404>:	call   0x80484a0 <__stack_chk_fail@plt>
+   0x08048ec7 <+1409>:	mov    -0x4(%ebp),%ebx
+   0x08048eca <+1412>:	leave
+   0x08048ecb <+1413>:	ret
+End of assembler dump.
+
+- After analysing the assembly code, we know we can alter the behaviour of the program to make it go straight to the token printing part.
+
+- To avoid memory errors, let the program run the first instructions, then jump to <main+1183> line.
+
+`break *0x08048990` # set a breakpoint before the first conditional jump
+Breakpoint 1 at 0x8048990
+`run`
+Starting program: /bin/getflag
+
+Breakpoint 1, 0x08048990 in main ()
+`jump *0x08048de5`
+Continuing at 0x8048de5.
+7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
+[Inferior 1 (process 4707) exited normally]
+`quit`
+
+`su flag14`
+`7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ`
+Congratulation. Type getflag to get the key and send it to me the owner of this livecd :)
