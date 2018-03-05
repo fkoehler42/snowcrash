@@ -1,4 +1,4 @@
-/!\ From here, we will sometimes use a Kali Linux virtual machine which provide some useful security tools.
+/!\ In this level, we use a Kali Linux virtual machine which provide the following tool : John The Ripper. /!\
 
 - On SnowCrash machine, look at the file '/etc/passwd' to reveal the hashed password for the user flag01.
 
