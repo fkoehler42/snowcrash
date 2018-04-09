@@ -63,7 +63,7 @@ Connecting to 127.0.0.1:6969 .. Unable to connect to host 127.0.0.1
 - Look for a way to send the token and get its content, listening to port 6969.
 
 - After some investigations on the Internet about differents exploits, and a closer look to the man pages of the functions called inside the executable,
-we find that use the 'access()' function to check the permissions before a call to 'open()' is unsecure. Actually, a race condition exploit will allow us to alter the file between the 'acess()' and the 'open()' calls.
+we find that use the 'access()' function to check the permissions before a call to 'open()' is unsecure. Actually, a race condition exploit will allow us to alter the file between the 'access()' and the 'open()' call.
 
 - The interval is short, so we need to launch two processes at the same time to run the executable and alter the file we will send.
 

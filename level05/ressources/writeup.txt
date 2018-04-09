@@ -31,7 +31,7 @@ done
 
 - This folder allows level05 user to write in, so create a simple script that execute the getflag command and redirect the output to a file to get it.
 
-- The file must be in an other accessible for writing folder to not have it deleted after the script execution.
+- The file must be in another folder, accessible for writing, to not have it deleted after the script execution.
 
 `echo "getflag > /tmp/flag" > /opt/openarenaserver/getflag`
 

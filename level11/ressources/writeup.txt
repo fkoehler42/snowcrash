@@ -9,10 +9,10 @@ local server = assert(socket.bind("127.0.0.1", 5151)) # link the socket to local
 
 function hash(pass)
   prog = io.popen("echo "..pass.." | sha1sum", "r") # execute the command 'echo pass_variable | sha1sum' and enable the reading of its output
-  data = prog:read("*all") # read the complete output of the previous command
+  data = prog:read("*all") # read the full output of the previous command
   prog:close()
 
-  data = string.sub(data, 1, 40) cut the resulting string to get the hash only
+  data = string.sub(data, 1, 40) # cut the resulting string to get the hash only
 
   return data
 end
@@ -56,8 +56,8 @@ Gz you dumb*
 
 - The script prints the expected string, but nothing else happens, so the answer is elsewhere.
 
-- The previous attempt is here to explain my first approach but it's not required.
-We may first understand that we can inject code (as I did by adding -n flag to echo execution) to run getflag via the 'pass' variable.
+- The previous attempt is here to explain our first approach but it's not required.
+We may first understand that we can inject code (as we did by adding -n flag to echo execution) to run getflag via the 'pass' variable.
 
 - Due to the pipe used to redirect the output of echo to sha1sum command, we will redirect the output of getflag in a file before.
 

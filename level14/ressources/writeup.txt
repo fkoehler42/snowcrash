@@ -152,3 +152,6 @@ Continuing at 0x8048de5.
 `su flag14`
 `7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ`
 Congratulation. Type getflag to get the key and send it to me the owner of this livecd :)
+
+`getflag`
+Check flag.Here is your token : 7QiHafiNa3HVozsaXkawuYrTstxbpABHD8CPnHJ
